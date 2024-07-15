@@ -32,15 +32,15 @@ To employ your custom dataset, it is crucial to adhere to a specific data struct
 
 3. **MUA Mask:** In our case, we employed morphological urban areas as delineated by Taubenböck et al., 2019. The data must be named mua_AOI.tif (e.g. mua_mumbai.tif).
 
-4. **Slum Reference Mask:** Employ values of 1 to represent slum areas. The data must be named AOI_slum_reference.tif (e.g. Mumbai_slum_reference.tif).
+4. **Slum Reference Mask:** Employ values of 1 to represent slum areas. The data must be named reference_AOI.tif (e.g. reference_mumbai.tif).
 
-Ensuring uniform resolution and extent across all three files is imperative for seamless integration into our processing pipeline.
+Ensuring uniform resolution and extent across all files is imperative for seamless integration into our processing pipeline.
 
 <small><i>Zhu, X. X., Hu, J., Qiu, C., Shi, Y., Kang, J., Mou, L., ... & Wang, Y. (2019). So2Sat LCZ42: A benchmark dataset for global local climate zones classification. arXiv preprint arXiv:1912.12171.</i></small>
 
-<small><i>Taubenböck, H., Weigand, M., Esch, T., Staab, J., Wurm, M., Mast, J., Dech,840
-S., 2019. A new ranking of the world’s largest cities—do administrative841
-units obscure morphological realities? Remote Sens. Environ. 232,842
+<small><i>Taubenböck, H., Weigand, M., Esch, T., Staab, J., Wurm, M., Mast, J., Dech,
+S., 2019. A new ranking of the world’s largest cities—do administrative
+units obscure morphological realities? Remote Sens. Environ. 232
 111353. doi:https://doi.org/10.1016/j.rse.2019.111353.<small><i>
 
 
@@ -48,22 +48,21 @@ units obscure morphological realities? Remote Sens. Environ. 232,842
 
 1. **run_split_raster.py**
     - This script splits the remote sensing data into small tiles and creates the labels.
-    - The labels are created for 3 classes: 0 and 1 for background and urban areas, and class 2 for slum polygons.
+    - The labels are created for 5 classes: 0 background, 1 urban built-up areas, 2 vegetation, 3 water and class 4 for slums.
     - All data should be of the same extent and resolution.
-    - Labels are added to the image tile file name and saved in the `data/datasets` directory, along with image statistics used for normalization.
+    - Labels are added to the image tile file name and saved in the `data/datasets` directory.
 
-2. **run_train_pretraining.py**
-    - This script pretrains the STnet using the example data.
+2. **run_train.py**
+    - This script pretrains the model using the example data.
     - The pretraining is performed on the Caracas dataset.
 
-3. **run_train_transferlearning.py**
-    - This script finetunes the STnet using the example data.
-    - The pretrained STnet is transfer-learned on the Mumbai dataset.
+3. **run_train.py**
+    - This script transfer learns the model using the example data.
+    - The pretrained model is transfer-learned on the Mumbai dataset.
 
-4. **run_inference.py**
+4. **run_predict.py**
     - This script creates results and maps using the Mumbai dataset.
     - Note: Since the example dataset is small, the same data is used for both transfer-learning and testing.
-    - In the original paper, a 2-fold split is used for transfer-learning and testing, and the results are merged afterwards.
 
 ## Results
 
