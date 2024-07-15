@@ -1,0 +1,27 @@
+epochs: 25
+parameters:
+  batch_size: 32
+  bit_depth: 8
+  dropout: 0.5
+  epochs: 5
+  image_size: 224
+  learningrate: 0.001
+  learningrate_sheduler: CosineAnnealingWarmRestarts
+  model: efficientnet_b4
+  normalization: imagenet
+  num_channels: 3
+  num_classes: 5
+  optimizer: adam
+  pretrained: false
+  progressbar: false
+  save_inference_images: true
+  seed: 42
+  test_time_augmentation: true
+  test_time_dropout: true
+  test_time_iterations: 5
+  transfer: true
+  verbose: 0
+paths:
+  data_path: /.../data/transfer_data/Abidjan_00076_21602/images
+  log_path: /.../data/transfer_data/Abidjan_00076_21602
+  pretrain_base_dir: /.../data/pretrain_data/logs
