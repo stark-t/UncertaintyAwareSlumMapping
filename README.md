@@ -13,11 +13,11 @@ Slums are densely populated urban areas characterized by substandard housing and
 ### **Install Repository Dependencies**
 
 1. install requirements.txt
-2. change config_example.py to config.py and adjust paths accordingly
+2. change config examples and adjust paths accordingly
 
 ### **Get Data**
 
-**Note:** The data provided here is solely intended for illustrative purposes and deviates from the original paper. In the original study, we utilized resampled 3-meter PlanetScope data. However, due to copyright restrictions, we have substituted it with 3-meter resampled RGB Sentinel-2 imagery from the cities of Caracas and Mumbai as a demonstrative example.
+**Note:** The data provided here is solely intended for illustrative purposes and deviates from the original paper. In the original study, we utilized 4.77-meter PlanetScope data. However, due to copyright restrictions, we have substituted it with resampled RGB Sentinel-2 imagery from the cities of Caracas and Mumbai as a demonstrative example.
 
 To use the example data, follow these steps:
 
@@ -26,15 +26,22 @@ To use the example data, follow these steps:
 
 To employ your custom dataset, it is crucial to adhere to a specific data structure. For each area of interest (AOI) within the data directory, three requisite files are essential, each sharing identical resolution and extent:
 
-1. **Remote Sensing Imagery:** This should be in RGB format and resampled to a 3-meter resolution. It must be named AOI_3m.tif (e.g., Mumbai_3m.tif).
+1. **Remote Sensing Imagery:** This should be in RGB format and resampled to a 4.77-meter resolution. It must be named planet_AOI.tif (e.g., planet_mumbai.tif).
 
-2. **Urban-Background Mask:** Utilize values of 0 for background and 1 for urban areas. In our case, we employed Local Climate Zones as delineated by Zhu et al., 2019. The data must be named AOI_urban.tif (e.g. Mumbai_urban.tif).
+2. **LCZ reference Mask:** In our case, we employed Local Climate Zones as delineated by Zhu et al., 2019. The data must be named lcz_AOI.tif (e.g. lcz_mumbai.tif).
 
-3. **Slum Reference Mask:** Employ values of 1 to represent slum areas. The data must be named AOI_slum_reference.tif (e.g. Mumbai_slum_reference.tif).
+3. **MUA Mask:** In our case, we employed morphological urban areas as delineated by Taubenböck et al., 2019. The data must be named mua_AOI.tif (e.g. mua_mumbai.tif).
+
+4. **Slum Reference Mask:** Employ values of 1 to represent slum areas. The data must be named AOI_slum_reference.tif (e.g. Mumbai_slum_reference.tif).
 
 Ensuring uniform resolution and extent across all three files is imperative for seamless integration into our processing pipeline.
 
 <small><i>Zhu, X. X., Hu, J., Qiu, C., Shi, Y., Kang, J., Mou, L., ... & Wang, Y. (2019). So2Sat LCZ42: A benchmark dataset for global local climate zones classification. arXiv preprint arXiv:1912.12171.</i></small>
+
+<small><i>Taubenböck, H., Weigand, M., Esch, T., Staab, J., Wurm, M., Mast, J., Dech,840
+S., 2019. A new ranking of the world’s largest cities—do administrative841
+units obscure morphological realities? Remote Sens. Environ. 232,842
+111353. doi:https://doi.org/10.1016/j.rse.2019.111353.<small><i>
 
 
 ### **Run Code**
