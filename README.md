@@ -52,11 +52,11 @@ units obscure morphological realities? Remote Sens. Environ. 232
     - All data should be of the same extent and resolution.
     - Labels are added to the image tile file name and saved in the `data/pretrain` or `data/transfer` directory.
 
-2. **run_train.py**
+2. **run_train.py pretraining** 
     - This script pretrains the model using the example data.
     - The pretraining is performed on the Caracas dataset.
 
-3. **run_train.py**
+3. **run_train.py transfer learning**
     - This script transfer learns the model using the example data.
     - The pretrained model is transfer-learned on the Mumbai dataset.
 
