@@ -50,7 +50,7 @@ units obscure morphological realities? Remote Sens. Environ. 232
     - This script splits the remote sensing data into small tiles and creates the labels.
     - The labels are created for 5 classes: 0 background, 1 urban built-up areas, 2 vegetation, 3 water and class 4 for slums.
     - All data should be of the same extent and resolution.
-    - Labels are added to the image tile file name and saved in the `data/datasets` directory.
+    - Labels are added to the image tile file name and saved in the `data/pretrain` or `data/transfer` directory.
 
 2. **run_train.py**
     - This script pretrains the model using the example data.
