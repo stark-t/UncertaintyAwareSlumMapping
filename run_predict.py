@@ -222,10 +222,10 @@ def run_predict(config):
 
     # Inference
     # Create empty array with the same dimensions as the planet image
-    planet_path = config["paths"]["planet_path"]
-    planet_image = tif.imread(planet_path)
-    height, width, _ = planet_image.shape
-    print("Planet image shape:", planet_image.shape)
+    remsen_path = config["paths"]["remsen_path"]
+    remsen_image = tif.imread(remsen_path)
+    height, width, _ = remsen_image.shape
+    print("Planet image shape:", remsen_image.shape)
 
     probability_array = np.full((height, width), np.nan, dtype=np.float32)
     classification_array = np.full((height, width), np.nan, dtype=np.float32)
@@ -318,17 +318,18 @@ def run_predict(config):
     # Save the image with the same georeference as planet raster using rasterio
     # Open the planet raster file
     results_arrays = [
+        probability_array,
         classification_array,
         label_array,
     ]  # [probability_array, classification_array, label_array]
-    result_array_names = ["classification", "label"]
+    result_array_names = ["probability_array", "classification_array", "label_array"]
     for i in range(len(results_arrays)):
-        base_path, _ = os.path.split(config["paths"]["planet_path"])
+        base_path, _ = os.path.split(config["paths"]["remsen_path"])
         output_path = os.path.join(
             base_path,
             result_array_names[i] + "_" + str(config["parameters"]["model"]) + ".tif",
         )
-        with rasterio.open(planet_path) as src:
+        with rasterio.open(remsen_path) as src:
             # Create a new raster file with the same georeference as the planet raster
             with rasterio.open(
                 output_path,
@@ -344,8 +345,34 @@ def run_predict(config):
                 # Write the probability_array to the new raster file
                 dst.write(results_arrays[i], 1)
 
-    # only get predictions for the test set using the index from df_tes_indices
+    # Plot the original image
+    plt.subplot(2, 2, 1)
+    plt.imshow(remsen_image)
+    plt.title("Original Image")
 
+    # Plot the probability array
+    plt.subplot(2, 2, 2)
+    plt.imshow(probability_array)
+    plt.title("Probability Array")
+
+    # Plot the label array
+    plt.subplot(2, 2, 3)
+    plt.imshow(label_array)
+    plt.title("Label Array")
+
+    # Plot the classification array
+    plt.subplot(2, 2, 4)
+    plt.imshow(classification_array)
+    plt.title("Classification Array")
+
+    # Adjust the spacing between subplots
+    plt.tight_layout()
+
+    # Show the plot
+    plt.savefig("./data/results.png")
+    plt.show()
+
+    # only get predictions for the test set using the index from df_tes_indices
     labels_class = [labels_class[i] for i in df_test_indices]
     preds_class = [preds_class[i] for i in df_test_indices]
 
@@ -389,7 +416,7 @@ def run_predict(config):
     print("Class 4 F1 Score: {:.2f}".format(f1 * 100))
 
     # Write the print statements to a text file
-    base_path, _ = os.path.split(config["paths"]["planet_path"])
+    base_path, _ = os.path.split(config["paths"]["remsen_path"])
     output_file = os.path.join(
         base_path, "accuaracy_metrics_" + str(config["parameters"]["model"]) + ".txt"
     )
@@ -407,7 +434,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--config",
         type=str,
-        default="/mnt/data1/2023_P3_TDGUP/data/transfer_data/Abidjan_00076_21602/config_predict_resnet18.yaml",
+        default="/mnt/ushelf_star_th/projects/2023_TDGUP_Dissertation/2023_P3_TDGUP/UncertaintyAwareSlumMapping/config_predict.yaml",
         help="Path to YAML config file",
     )
     args = parser.parse_args()
