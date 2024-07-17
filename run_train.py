@@ -24,6 +24,7 @@ import matplotlib.pyplot as plt
 
 torch.set_float32_matmul_precision("medium")
 
+
 def main(config, log_path="path_to_log_dir"):
     # Set seed for reproducibility
     seed_everything(config["parameters"]["seed"], workers=True)
@@ -36,18 +37,41 @@ def main(config, log_path="path_to_log_dir"):
 
     # Extract file name components and create columns in the DataFrame
     file_df["file_name"] = file_df["file_path"].apply(os.path.basename)
-    file_df[["city", "x0_", "x0", "x1_", "x1", "dst_", "bg", "urban", "vegetation", "water", "slum", "ending_"]] = file_df["file_name"].str.split("_", expand=True)
-    file_df.drop(columns=["x0_", "x1_", "dst_", "ending_"], inplace=True, errors="ignore")
+    file_df[
+        [
+            "city",
+            "x0_",
+            "x0",
+            "x1_",
+            "x1",
+            "dst_",
+            "bg",
+            "urban",
+            "vegetation",
+            "water",
+            "slum",
+            "ending_",
+        ]
+    ] = file_df["file_name"].str.split("_", expand=True)
+    file_df.drop(
+        columns=["x0_", "x1_", "dst_", "ending_"], inplace=True, errors="ignore"
+    )
 
     # Create the 'class' column based on the maximum value among 'bg', 'urban', 'vegetation', 'water', and 'slum'
-    file_df["class_name"] = (file_df[["bg", "urban", "vegetation", "water", "slum"]].astype(float)).idxmax(axis=1)
-    file_df["class"] = file_df["class_name"].map({"bg": 0, "urban": 1, "vegetation": 2, "water": 3, "slum": 4})
+    file_df["class_name"] = (
+        file_df[["bg", "urban", "vegetation", "water", "slum"]].astype(float)
+    ).idxmax(axis=1)
+    file_df["class"] = file_df["class_name"].map(
+        {"bg": 0, "urban": 1, "vegetation": 2, "water": 3, "slum": 4}
+    )
 
     # Adjust the 'slum' class threshold and update the 'class' column accordingly
     def adjust_slum_class_threshold(file_df, threshold):
         file_df["class"] = file_df.apply(
             lambda x: (
-                4 if (isinstance(x["slum"], bool) and x["slum"]) or (isinstance(x["slum"], str) and int(x["slum"]) >= threshold)
+                4
+                if (isinstance(x["slum"], bool) and x["slum"])
+                or (isinstance(x["slum"], str) and int(x["slum"]) >= threshold)
                 else x["class"]
             ),
             axis=1,
@@ -71,7 +95,9 @@ def main(config, log_path="path_to_log_dir"):
             # Get all rows of class_label
             class_rows = file_df[file_df["class"] == class_label]
             # Concatenate class_rows four times to file_df
-            file_df = pd.concat([file_df, class_rows, class_rows, class_rows, class_rows])
+            file_df = pd.concat(
+                [file_df, class_rows, class_rows, class_rows, class_rows]
+            )
 
     # Drop all rows with class 0
     file_df = file_df[file_df["class"] != 0]
@@ -88,50 +114,14 @@ def main(config, log_path="path_to_log_dir"):
     df_test = pd.DataFrame()
     groups = file_df.groupby("class", group_keys=False)
     for class_id, group in groups:
-        if class_id == 4:
-            n_samples = 100
-        else:
-            n_samples = 33
-        group_train, group_temp = train_test_split(group, test_size=0.4, random_state=config["parameters"]["seed"])
-        group_val, group_test = train_test_split(group_temp, test_size=0.5, random_state=config["parameters"]["seed"])
-        # If pretrain imbalanced & if transfer balanced class dataset
-        if isinstance(config["parameters"]["pretrained"], str) and not config["parameters"]["pretrained"].lower() == "true":
-            group_train = group_train.sample(n=n_samples, random_state=config["parameters"]["seed"], replace=True)
-            group_val = group_val.sample(n=n_samples, random_state=config["parameters"]["seed"], replace=True)
-            group_test = group_test.sample(n=n_samples, random_state=config["parameters"]["seed"], replace=True)
-        df_train = pd.concat([df_train, group_train])
-        df_val = pd.concat([df_val, group_val])
-        df_test = pd.concat([df_test, group_test])
-
-    # Print class counts
-    print("There are {} slum tiles in df_train:", len(df_train[df_train["class"] == 4]))
-    print("Class 4 counts in df_val:", len(df_val[df_val["class"] == 4]))
-    # Drop all rows with class 0
-    file_df = file_df[file_df["class"] != 0]
-
-    # print fial class counts sorted
-    class_counts = file_df["class"].value_counts().sort_index()
-    print("Class Counts:")
-    for class_label, count in class_counts.items():
-        print(f"Class {class_label} count: {count}")
-
-    # Split the data into train, val, and test
-    df_train = pd.DataFrame()
-    df_val = pd.DataFrame()
-    df_test = pd.DataFrame()
-    groups = file_df.groupby("class", group_keys=False)
-    for class_id, group in groups:
-        if class_id == 4:
-            n_samples = 100
-        else:
-            n_samples = 33
+        n_samples = 100
         group_train, group_temp = train_test_split(
             group, test_size=0.4, random_state=config["parameters"]["seed"]
         )
         group_val, group_test = train_test_split(
             group_temp, test_size=0.5, random_state=config["parameters"]["seed"]
         )
-        # if pretrain imbalanced & if transfer balanced class dataset
+        # If pretrain imbalanced & if transfer balanced class dataset
         if (
             isinstance(config["parameters"]["pretrained"], str)
             and not config["parameters"]["pretrained"].lower() == "true"
@@ -150,9 +140,17 @@ def main(config, log_path="path_to_log_dir"):
         df_test = pd.concat([df_test, group_test])
 
     # Print class counts
-    print("There are {} slum tiles in df_train:", len(df_train[df_train["class"] == 4]))
-    print("Class 4 counts in df_val:", len(df_val[df_val["class"] == 4]))
-    print("Class 4 counts in df_test:", len(df_test[df_test["class"] == 4]))
+    print(
+        "There are {} slum tiles in df_train:".format(
+            len(df_train[df_train["class"] == 4])
+        )
+    )
+    print(
+        "There are {} slum tiles in df_val:".format(len(df_val[df_val["class"] == 4]))
+    )
+
+    # Drop all rows with class 0
+    file_df = file_df[file_df["class"] != 0]
 
     # Get data
     train_set = Dataset(
@@ -221,10 +219,7 @@ def main(config, log_path="path_to_log_dir"):
 
         tqdm_refreshrate = int((len(train_set) / batch_size) / 5)
 
-    if config["parameters"]["pretrained"]:
-        name_str = config["parameters"]["model"]
-    else:
-        name_str = config["parameters"]["model"] + file_df["city"][0]
+    name_str = config["parameters"]["model"]
 
     logger = TensorBoardLogger(
         save_dir=log_path,
@@ -296,7 +291,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--config",
         type=str,
-        default="/mnt/data1/2023_P3_TDGUP/data/transfer_data/Abidjan_00076_21602/config_transfer_resnet18.yaml",
+        default="/mnt/ushelf_star_th/projects/2023_TDGUP_Dissertation/2023_P3_TDGUP/UncertaintyAwareSlumMapping/config_transfer.yaml",
         help="Path to YAML config file",
     )
     args = parser.parse_args()
@@ -307,8 +302,7 @@ if __name__ == "__main__":
     # create log info
     model_name = config["parameters"]["model"]
     if config["parameters"]["transfer"]:
-        city_name = config["paths"]["log_path"].split("/")[-1].split("_")[0].lower()
-        log_name = "transfer_" + model_name + "_" + city_name
+        log_name = "transfer_" + model_name
     else:
         log_name = "pretrained_" + model_name
 
