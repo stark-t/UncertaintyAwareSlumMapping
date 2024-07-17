@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import cv2
+import tifffile as tiff
 import array
 
 import torch
@@ -33,7 +34,7 @@ class Dataset(TorchDataset):
             img_stds = get_stats(stats['Std'].to_list())
 
         # read image
-        image = cv2.imread(self.file_paths[idx])
+        image = tiff.imread(self.file_paths[idx])
         image = pad_to_imgsize(image, self.config["parameters"]["image_size"])
         # image = cv2.resize(image, (self.config["parameters"]["image_size"], self.config["parameters"]["image_size"]))
 
