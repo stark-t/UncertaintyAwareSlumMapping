@@ -21,7 +21,7 @@ Slums are densely populated urban areas characterized by substandard housing and
 
 To use the example data, follow these steps:
 
-1. Download the data from Figshare https://figshare.com/articles/dataset/Dataset/24988959.
+1. Download the data from Figshare https://figshare.com/articles/dataset/UncertaintyAwareSlumMapping/26325841.
 2. Extract the data into the `/data/` directory.
 
 To employ your custom dataset, it is crucial to adhere to a specific data structure. For each area of interest (AOI) within the data directory, three requisite files are essential, each sharing identical resolution and extent:
