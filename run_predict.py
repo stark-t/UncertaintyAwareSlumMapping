@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy import stats
 import tifffile as tif
+import cv2
 from pathlib import Path
 
 import torch
@@ -224,8 +225,12 @@ def run_predict(config):
     # Create empty array with the same dimensions as the planet image
     remsen_path = config["paths"]["remsen_path"]
     remsen_image = tif.imread(remsen_path)
+    remsen_image = remsen_image
+    remsen_image = np.where(remsen_image == 65535, np.nan, remsen_image)
+    remsen_image = cv2.normalize(remsen_image, None, 0, 255, cv2.NORM_MINMAX)
+    remsen_image = np.where(np.isnan(remsen_image), 255, remsen_image)
     height, width, _ = remsen_image.shape
-    print("Planet image shape:", remsen_image.shape)
+    print("Image shape:", remsen_image.shape)
 
     probability_array = np.full((height, width), np.nan, dtype=np.float32)
     classification_array = np.full((height, width), np.nan, dtype=np.float32)
@@ -347,23 +352,26 @@ def run_predict(config):
 
     # Plot the original image
     plt.subplot(2, 2, 1)
-    plt.imshow(remsen_image)
+    plt.imshow(remsen_image[:, :, [3, 2, 1]].astype(np.uint8))
     plt.title("Original Image")
 
     # Plot the probability array
     plt.subplot(2, 2, 2)
-    plt.imshow(probability_array)
+    plt.imshow(probability_array, cmap="Reds", vmin=0.2, vmax=1)
+    plt.colorbar(label="Probability")
     plt.title("Probability Array")
 
     # Plot the label array
     plt.subplot(2, 2, 3)
-    plt.imshow(label_array)
+    plt.imshow(label_array, cmap="viridis", vmin=0, vmax=4)
     plt.title("Label Array")
+    plt.colorbar(ticks=[0, 1, 2, 3, 4], label="Class")
 
     # Plot the classification array
     plt.subplot(2, 2, 4)
-    plt.imshow(classification_array)
+    plt.imshow(classification_array, cmap="viridis", vmin=0, vmax=4)
     plt.title("Classification Array")
+    plt.colorbar(ticks=[0, 1, 2, 3, 4], label="Class")
 
     # Adjust the spacing between subplots
     plt.tight_layout()
