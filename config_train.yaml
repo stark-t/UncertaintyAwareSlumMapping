@@ -1,0 +1,27 @@
+epochs: 25
+parameters:
+  batch_size: 32
+  bit_depth: 8
+  dropout: 0.5
+  epochs: 25 # 100 in paper
+  image_size: 224
+  learningrate: 0.001
+  learningrate_sheduler: CosineAnnealingWarmRestarts
+  model: efficientnet_b4
+  normalization: imagenet
+  num_channels: 3
+  num_classes: 5
+  optimizer: adam
+  pretrained: true
+  progressbar: false
+  save_inference_images: true
+  seed: 42
+  test_time_augmentation: true
+  test_time_dropout: true
+  test_time_iterations: 10 # 25 in paper
+  transfer: false # false for pretraining & true for transfer learning
+  verbose: 0
+paths:
+  data_path: /.../UncertaintyAwareSlumMapping/data/pretrain/images
+  log_path: /.../UncertaintyAwareSlumMapping/data/pretrain
+  pretrain_base_dir: /.../UncertaintyAwareSlumMapping/data/pretrain/logs
