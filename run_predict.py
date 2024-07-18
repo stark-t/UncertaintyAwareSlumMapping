@@ -1,12 +1,10 @@
 import argparse
 import yaml
-from tqdm import tqdm
 from glob import iglob
 import pandas as pd
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
 from scipy import stats
 import tifffile as tif
 import cv2
@@ -26,7 +24,6 @@ from model_lit import LitClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import (
     balanced_accuracy_score,
-    top_k_accuracy_score,
     cohen_kappa_score,
 )
 from shutil import rmtree
@@ -64,8 +61,11 @@ def run_predict(config):
         columns=["x0_", "x1_", "dst_", "ending_"], inplace=True, errors="ignore"
     )
     # Find the maximum values of x0 and x1
-    max_x0 = file_df["x0"].astype(int).max()
-    max_x1 = file_df["x1"].astype(int).max()
+    if config["parameters"]["verbose"] >= 2:
+        max_x0 = file_df["x0"].astype(int).max()
+        max_x1 = file_df["x1"].astype(int).max()
+        print("Max x0:", max_x0)
+        print("Max x1:", max_x1)
 
     # Create the 'class' column
     file_df["class_name"] = (
@@ -95,10 +95,11 @@ def run_predict(config):
 
     # get class counts sorted
     class_counts = file_df["class"].value_counts()
+    if config["parameters"]["verbose"] >= 2:
+        print("Class counts:")
+        print(class_counts)
 
     # Split the data into train, val, and test
-    df_train = pd.DataFrame()
-    df_val = pd.DataFrame()
     df_test = pd.DataFrame()
     groups = file_df.groupby("class", group_keys=False)
     for _, group in groups:
