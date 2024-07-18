@@ -66,7 +66,6 @@ units obscure morphological realities? Remote Sens. Environ. 232
 
 ## Results
 
-![Mumbai Sentinel-2](https://github.com/stark-t/UncertaintyAwareSlumMapping/blob/2f8c7bc59d8c69a236dcccb3b98a75bd8227778b/readme_images/mumbai1.png)
-
+![Mumbai Sentinel-2](https://github.com/stark-t/UncertaintyAwareSlumMapping/blob/2f8c7bc59d8c69a236dcccb3b98a75bd8227778b/readme_images/mumbai1.png) | ![Slum Probability](https://github.com/stark-t/UncertaintyAwareSlumMapping/blob/2f8c7bc59d8c69a236dcccb3b98a75bd8227778b/readme_images/mumbai2.png)
 
 **Note:** Please note that the results shown here are based on a limited amount of data and may not be ideal. They should be used as a reference for structuring other data to achieve similar results as described in the original paper. If you require additional data or access to the original model weights, feel free to contact the authors. They will be happy to assist you.
